@@ -56,7 +56,7 @@ const MediaForm: React.FC<MediaFormProps> = ({
         location: "",
         duration: "",
         yearTime: "",
-        imageUrl: " ",
+        imageUrl: "",
       }
     );
   }, [initialData, form]);
@@ -209,7 +209,7 @@ const MediaForm: React.FC<MediaFormProps> = ({
                     }}
                   />
                 </FormControl>
-                <div className={`${field.value ? "hidden" : "block"}`}>
+                <div className={`${field.value ? "block" : "hidden"}`}>
                   <img
                     src={field.value}
                     alt="Uploaded"
