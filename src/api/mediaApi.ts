@@ -41,7 +41,6 @@ export async function fetchMedia(
   limit: number = 10
 ): Promise<FetchMediaResponse> {
   const response = await fetch(`${MEDIA_URL}?page=${page}&limit=${limit}`);
-  console.log(response);
   return handleResponse<FetchMediaResponse>(response);
 }
 
@@ -61,7 +60,7 @@ export async function updateMedia(
   data: MediaFormData
 ): Promise<MediaEntry> {
   const response = await fetch(`${MEDIA_URL}/${id}`, {
-    method: "PUT", // Assuming your backend uses PUT for full updates
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
