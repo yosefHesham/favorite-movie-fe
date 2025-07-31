@@ -1,69 +1,72 @@
-# React + TypeScript + Vite
+# Favorite Movies & TV Shows Web Application (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is the frontend of a full-stack web application designed to manage a list of favorite movies and TV shows. It's built with a modern technology stack to provide a fast, responsive, and user-friendly experience.
 
-Currently, two official plugins are available:
+### Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Add New Entry**: A clean, responsive form allows users to add new movie or TV show entries with details like title, director, budget, location, and year/time.
+- **Image Upload**: Entries can be enhanced with an image poster or thumbnail, with uploads handled by the ImgHippos service.
+- **Display Entries**: All records are beautifully presented in a responsive table.
+- **Infinite Scroll**: The table efficiently loads more records as the user scrolls, providing a smooth experience even with a large number of entries.
+- **Edit and Delete**: Each entry includes buttons for editing its details or deleting it from the list after a confirmation.
+- **Modern UI/UX**: The application uses Shadcn UI components and TailwindCSS for a clean, accessible, and responsive design.
+- **Notifications**: User actions are confirmed with clear and modern toasts powered by Sonner.
+- **Separation of Concerns**: All network calls are neatly organized in a dedicated `src/api` directory for better code organization and maintainability.
 
-## Expanding the ESLint configuration
+### Technology Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React (with Vite and TypeScript)**: A powerful combination for building user interfaces with a fast development environment and strong type safety.
+- **TailwindCSS**: A utility-first CSS framework for rapid and consistent styling.
+- **Shadcn UI**: A collection of accessible and customizable components that seamlessly integrates with TailwindCSS.
+- **`react-hook-form`**: A highly performant and flexible library for form management and validation.
+- **Sonner**: A modern, composable toast library for user notifications.
+- **ImgHippos**: The service used for handling image uploads.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Setup Instructions
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Follow these steps to get the frontend application running locally.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**Prerequisites**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Node.js (LTS version recommended)
+- npm or Yarn
+- A running backend server for the application.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+**Steps**
+
+1.  **Clone the repository and navigate to the frontend directory:**
+
+    ```bash
+    git clone https://github.com/yosefHesham/favorite-movie-fe.git
+    cd favorite-movie-fe
+    ```
+
+2.  **Install dependencies:**
+
+    ```bash
+    npm install
+    # or yarn install
+    ```
+
+3.  **Configure the backend API URL:**
+
+    clone my backend repository from [here](https://github.com/yosefHesham/favorite-movie-be).
+
+    Create a `.env` file in the root of the frontend directory and add your backend's API URL.
+
+    ```env
+    VITE_API_BASE_URL=http://localhost:3000/api
+    ```
+
+    _Note: If your backend is deployed, use its live URL instead._
+
+4.  **Run the development server:**
+
+    ```bash
+    npm run dev
+    # or yarn dev
+    ```
+
+The application will start, and you can view it by navigating to `http://localhost:5173` in your browser.
