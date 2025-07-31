@@ -63,7 +63,7 @@ const MediaTable: React.FC<MediaTableProps> = ({
       setError(null);
 
       try {
-        const data: FetchMediaResponse = await fetchMedia(pageNum, 10);
+        const data: FetchMediaResponse = await fetchMedia(pageNum, 20);
         totalMedia.current = data.meta.total;
         if (resetData) {
           setMedia(data.data || []);
@@ -116,7 +116,7 @@ const MediaTable: React.FC<MediaTableProps> = ({
             Favorite Movies & TV Shows {}
           </h2>
           <p>
-            Showing {page * 10} of {totalMedia.current}
+            Showing {page * 20} of {totalMedia.current}
           </p>
         </div>
         <Button
