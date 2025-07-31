@@ -19,6 +19,8 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import type { MediaEntry, MediaFormData } from "../types";
+import { toast } from "sonner";
+import { uploadImage } from "../api/imageUpload";
 
 interface MediaFormProps {
   onSubmit: (data: MediaFormData) => void;
@@ -40,6 +42,7 @@ const MediaForm: React.FC<MediaFormProps> = ({
       location: "",
       duration: "",
       yearTime: "",
+      imageUrl: "",
     },
   });
 
@@ -53,6 +56,7 @@ const MediaForm: React.FC<MediaFormProps> = ({
         location: "",
         duration: "",
         yearTime: "",
+        imageUrl: " ",
       }
     );
   }, [initialData, form]);
@@ -172,6 +176,48 @@ const MediaForm: React.FC<MediaFormProps> = ({
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Poster Image</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+
+                      try {
+                        const res = await uploadImage(file);
+                        if (res.data === undefined) {
+                          toast("error uploading");
+                        }
+
+                        field.onChange(res.data.url);
+                      } catch (err) {
+                        console.error("Image upload failed", err);
+                        toast("Image upload failed");
+                      }
+                    }}
+                  />
+                </FormControl>
+                {Boolean(field.value) && (
+                  <div className="mt-2">
+                    <img
+                      src={field.value}
+                      alt="Uploaded"
+                      className="max-h-[80px] rounded border"
+                    />
+                  </div>
+                )}
                 <FormMessage />
               </FormItem>
             )}

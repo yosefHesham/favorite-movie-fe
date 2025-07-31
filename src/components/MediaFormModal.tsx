@@ -26,7 +26,7 @@ const MediaFormDialog: React.FC<MediaFormDialogProps> = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl!  overflow-y-auto">
+      <DialogContent className="max-w-2xl!  max-h-[94vh] mb-10 overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {initialData ? "Edit Media Entry" : "Add New Media Entry"}

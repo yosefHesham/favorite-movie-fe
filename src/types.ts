@@ -18,5 +18,5 @@ export interface MediaFormData {
   location: string;
   duration: string;
   yearTime: string;
-  imageUrl: string;
+  imageUrl?: string;
 }

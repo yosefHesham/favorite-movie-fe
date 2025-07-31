@@ -12,6 +12,7 @@ import {
 import { Button } from "../components/ui/button";
 import { fetchMedia, type FetchMediaResponse } from "../api/mediaApi";
 import LoadingSpinner from "./Spinner";
+import MediaPosterModal from "./MediaPosterModal";
 
 interface MediaTableProps {
   onEdit: (entry: MediaEntry) => void;
@@ -31,6 +32,7 @@ const MediaTable: React.FC<MediaTableProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [isImagePosterOpen, setImagePosterOpen] = useState("");
 
   const hasInitialLoadOccurred = useRef(false);
 
@@ -52,7 +54,7 @@ const MediaTable: React.FC<MediaTableProps> = ({
       });
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore, setPage] // Ensure setPage is in the dependency array
+    [loading, hasMore, setPage]
   );
   const totalMedia = useRef(0);
   const loadMedia = useCallback(
@@ -102,10 +104,14 @@ const MediaTable: React.FC<MediaTableProps> = ({
     }
   }, [refreshTrigger, loadMedia]);
 
-  console.log(media);
-
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-[1400px] mx-auto overflow-x-auto">
+      <MediaPosterModal
+        onClose={() => {
+          setImagePosterOpen("");
+        }}
+        movieImageUrl={isImagePosterOpen}
+      />
       <div className="flex justify-between">
         <div className="mb-4">
           <h2 className="text-2xl font-bold  mb-2 text-gray-900">
@@ -117,7 +123,7 @@ const MediaTable: React.FC<MediaTableProps> = ({
         </div>
         <Button
           onClick={() => onAddButtonClick()}
-          className="cursor-pointer px-8"
+          className="cursor-pointer font-bold text-lg px-4"
         >
           +
         </Button>
@@ -158,10 +164,23 @@ const MediaTable: React.FC<MediaTableProps> = ({
                   <TableCell>{entry.location}</TableCell>
                   <TableCell>{entry.duration}</TableCell>
                   <TableCell>{entry.yearTime}</TableCell>
+                  <TableCell>
+                    <div className="flex  w-full justify-center">
+                      <img
+                        onClick={() => {
+                          setImagePosterOpen(entry.imageUrl!);
+                        }}
+                        className="max-h-[30px] cursor-pointer"
+                        src={entry.imageUrl}
+                      />
+                    </div>
+                  </TableCell>
+
                   <TableCell className="flex space-x-2">
                     <Button
                       variant="outline"
                       size="sm"
+                      className="cursor-pointer"
                       onClick={() => {
                         onEdit(entry);
                         onAddButtonClick();
@@ -170,6 +189,7 @@ const MediaTable: React.FC<MediaTableProps> = ({
                       Edit
                     </Button>
                     <Button
+                      className="cursor-pointer"
                       variant="destructive"
                       size="sm"
                       onClick={() => onDelete(entry.id)}
