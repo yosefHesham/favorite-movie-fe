@@ -136,6 +136,7 @@ const MediaTable: React.FC<MediaTableProps> = ({
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Movie Poster</TableHead>
               <TableHead>Title</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Director</TableHead>
@@ -143,7 +144,6 @@ const MediaTable: React.FC<MediaTableProps> = ({
               <TableHead>Location</TableHead>
               <TableHead>Duration</TableHead>
               <TableHead>Year/Time</TableHead>
-              <TableHead>Image Poster</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -155,13 +155,6 @@ const MediaTable: React.FC<MediaTableProps> = ({
                   ref={isLastElement ? lastElementRef : null}
                   key={entry.id}
                 >
-                  <TableCell className="font-medium">{entry.title}</TableCell>
-                  <TableCell>{entry.type}</TableCell>
-                  <TableCell>{entry.director}</TableCell>
-                  <TableCell>{entry.budget}</TableCell>
-                  <TableCell>{entry.location}</TableCell>
-                  <TableCell>{entry.duration}</TableCell>
-                  <TableCell>{entry.yearTime}</TableCell>
                   <TableCell>
                     <div className="flex  w-full justify-center">
                       <img
@@ -173,6 +166,13 @@ const MediaTable: React.FC<MediaTableProps> = ({
                       />
                     </div>
                   </TableCell>
+                  <TableCell className="font-medium">{entry.title}</TableCell>
+                  <TableCell>{entry.type}</TableCell>
+                  <TableCell>{entry.director}</TableCell>
+                  <TableCell>{entry.budget}</TableCell>
+                  <TableCell>{entry.location}</TableCell>
+                  <TableCell>{entry.duration}</TableCell>
+                  <TableCell>{entry.yearTime}</TableCell>
 
                   <TableCell className="flex space-x-2">
                     <Button
