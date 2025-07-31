@@ -83,8 +83,6 @@ const MediaTable: React.FC<MediaTableProps> = ({
     []
   );
 
-  console.log(media);
-
   useEffect(() => {
     if (!hasInitialLoadOccurred.current) {
       loadMedia(1, true);

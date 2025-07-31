@@ -209,15 +209,13 @@ const MediaForm: React.FC<MediaFormProps> = ({
                     }}
                   />
                 </FormControl>
-                {Boolean(field.value) && (
-                  <div className="mt-2">
-                    <img
-                      src={field.value}
-                      alt="Uploaded"
-                      className="max-h-[80px] rounded border"
-                    />
-                  </div>
-                )}
+                <div className={`${field.value ? "hidden" : "block"}`}>
+                  <img
+                    src={field.value}
+                    alt="Uploaded"
+                    className="max-h-[80px] rounded border"
+                  />
+                </div>
                 <FormMessage />
               </FormItem>
             )}
