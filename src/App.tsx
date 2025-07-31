@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useCallback } from "react";
-import MediaForm from "./components/MediaForm";
 import MediaTable from "./components/MediaTable";
 import type { MediaEntry, MediaFormData } from "./types";
 import { createMedia, updateMedia, deleteMedia } from "./api/mediaApi";
@@ -8,6 +7,7 @@ import { createMedia, updateMedia, deleteMedia } from "./api/mediaApi";
 import { toast } from "sonner";
 import ConfirmationModal from "./components/ConfirmModal";
 import { Toaster } from "./components/ui/sonner";
+import MediaFormDialog from "./components/MediaFormModal";
 
 function App() {
   const [editingEntry, setEditingEntry] = useState<MediaEntry | null>(null);
@@ -39,6 +39,8 @@ function App() {
     []
   );
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const handleFormSubmit = async (data: MediaFormData) => {
     setIsFormSubmitting(true);
     try {
@@ -53,6 +55,7 @@ function App() {
         "success"
       );
       setEditingEntry(null);
+      setIsDialogOpen(false);
       setRefreshTableTrigger((prev) => prev + 1);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -106,12 +109,8 @@ function App() {
       </header>
 
       <main className="container mx-auto space-y-12">
-        <MediaForm
-          onSubmit={handleFormSubmit}
-          initialData={editingEntry}
-          isSubmitting={isFormSubmitting}
-        />
         <MediaTable
+          onAddButtonClick={() => setIsDialogOpen(true)}
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
           refreshTrigger={refreshTableTrigger}
@@ -126,6 +125,18 @@ function App() {
         message="Are you sure you want to delete this entry? This action cannot be undone."
       />
 
+      <MediaFormDialog
+        onSubmit={handleFormSubmit}
+        initialData={editingEntry}
+        isSubmitting={isFormSubmitting}
+        open={isDialogOpen}
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) {
+            setEditingEntry(null);
+          }
+        }}
+      />
       <Toaster />
     </div>
   );

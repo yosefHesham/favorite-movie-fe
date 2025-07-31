@@ -10,18 +10,20 @@ import {
   TableRow,
 } from "../components/ui/table";
 import { Button } from "../components/ui/button";
-import LoadingSpinner from "./Spinner";
 import { fetchMedia, type FetchMediaResponse } from "../api/mediaApi";
+import LoadingSpinner from "./Spinner";
 
 interface MediaTableProps {
   onEdit: (entry: MediaEntry) => void;
   onDelete: (id: string) => void;
+  onAddButtonClick: () => void;
   refreshTrigger: number;
 }
 
 const MediaTable: React.FC<MediaTableProps> = ({
   onEdit,
   onDelete,
+  onAddButtonClick,
   refreshTrigger,
 }) => {
   const [media, setMedia] = useState<MediaEntry[]>([]);
@@ -30,41 +32,48 @@ const MediaTable: React.FC<MediaTableProps> = ({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
+  const hasInitialLoadOccurred = useRef(false);
+
   const observer = useRef<IntersectionObserver | null>(null);
   const lastElementRef = useCallback(
     (node: HTMLTableRowElement | null) => {
-      if (loading) return;
+      if (loading || !hasMore) return;
+
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setPage((prevPage) => prevPage + 1);
+        if (entries[0].isIntersecting) {
+          if (!loading && hasMore) {
+            setTimeout(() => {
+              setPage((prevPage) => prevPage + 1);
+            }, 400);
+          }
         }
       });
-
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore]
+    [loading, hasMore, setPage] // Ensure setPage is in the dependency array
   );
-
+  const totalMedia = useRef(0);
   const loadMedia = useCallback(
     async (pageNum: number, resetData: boolean = false) => {
       setLoading(true);
       setError(null);
+
       try {
-        const data: FetchMediaResponse = await fetchMedia(pageNum, 20);
-
+        const data: FetchMediaResponse = await fetchMedia(pageNum, 10);
+        totalMedia.current = data.meta.total;
         if (resetData) {
-          setMedia(data.records);
+          setMedia(data.data || []);
         } else {
-          setMedia((prevMedia) => [...prevMedia, ...data.records]);
+          setMedia((prevMedia) => [...prevMedia, ...(data.data || [])]);
         }
+        const isLastPage = data.meta.page >= data.meta.totalPages;
 
-        setHasMore(data.records.length > 0 && data.hasNextPage);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (e: any) {
+        setHasMore(data.data.length > 0 && !isLastPage);
+      } catch (e: unknown) {
         console.error("Failed to load media:", e);
-        setError(`Failed to load entries: ${e.message}`);
+        setError(`Failed to load entries: ${(e as Error).message}`);
       } finally {
         setLoading(false);
       }
@@ -72,8 +81,15 @@ const MediaTable: React.FC<MediaTableProps> = ({
     []
   );
 
+  console.log(media);
+
   useEffect(() => {
-    loadMedia(page);
+    if (!hasInitialLoadOccurred.current) {
+      loadMedia(1, true);
+      hasInitialLoadOccurred.current = true;
+    } else if (page > 1) {
+      loadMedia(page);
+    }
   }, [page, loadMedia]);
 
   useEffect(() => {
@@ -82,21 +98,37 @@ const MediaTable: React.FC<MediaTableProps> = ({
       setPage(1);
       setHasMore(true);
       loadMedia(1, true);
+      hasInitialLoadOccurred.current = true;
     }
   }, [refreshTrigger, loadMedia]);
 
+  console.log(media);
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-5xl mx-auto overflow-x-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">
-        Favorite Movies & TV Shows
-      </h2>
+    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-[1400px] mx-auto overflow-x-auto">
+      <div className="flex justify-between">
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold  mb-2 text-gray-900">
+            Favorite Movies & TV Shows {}
+          </h2>
+          <p>
+            Showing {page * 10} of {totalMedia.current}
+          </p>
+        </div>
+        <Button
+          onClick={() => onAddButtonClick()}
+          className="cursor-pointer px-8"
+        >
+          +
+        </Button>
+      </div>
       {error && (
         <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
           {error}
         </div>
       )}
 
-      <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
+      <div className="overflow-x-auto overflow-y-scroll  relative shadow-md sm:rounded-lg">
         <Table>
           <TableHeader>
             <TableRow>
@@ -107,7 +139,7 @@ const MediaTable: React.FC<MediaTableProps> = ({
               <TableHead>Location</TableHead>
               <TableHead>Duration</TableHead>
               <TableHead>Year/Time</TableHead>
-              <TableHead>Other Details</TableHead>
+              <TableHead>Image Poster</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -130,7 +162,10 @@ const MediaTable: React.FC<MediaTableProps> = ({
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => onEdit(entry)}
+                      onClick={() => {
+                        onEdit(entry);
+                        onAddButtonClick();
+                      }}
                     >
                       Edit
                     </Button>

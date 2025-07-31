@@ -27,13 +27,13 @@ async function handleResponse<T>(response: Response): Promise<T> {
 }
 
 export interface FetchMediaResponse {
-  records: MediaEntry[];
-  totalRecords: number;
-  currentPage: number;
-  limit: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
+  data: MediaEntry[];
+  meta: {
+    limit: number;
+    total: number;
+    totalPages: number;
+    page: number;
+  };
 }
 
 export async function fetchMedia(
@@ -41,6 +41,7 @@ export async function fetchMedia(
   limit: number = 10
 ): Promise<FetchMediaResponse> {
   const response = await fetch(`${MEDIA_URL}?page=${page}&limit=${limit}`);
+  console.log(response);
   return handleResponse<FetchMediaResponse>(response);
 }
 

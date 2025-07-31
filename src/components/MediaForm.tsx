@@ -22,7 +22,7 @@ import type { MediaEntry, MediaFormData } from "../types";
 
 interface MediaFormProps {
   onSubmit: (data: MediaFormData) => void;
-  initialData?: MediaEntry | null; // For editing
+  initialData?: MediaEntry | null;
   isSubmitting: boolean;
 }
 
@@ -43,7 +43,6 @@ const MediaForm: React.FC<MediaFormProps> = ({
     },
   });
 
-  // Reset form when initialData changes (for switching between add/edit)
   useEffect(() => {
     form.reset(
       initialData || {
@@ -59,13 +58,9 @@ const MediaForm: React.FC<MediaFormProps> = ({
   }, [initialData, form]);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md mb-8 w-full max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">
-        {initialData ? "Edit Entry" : "Add New Entry"}
-      </h2>
+    <div className=" px-3 py-4 md:p-6 rounded-lg  mb-8 w-full">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {/* Title */}
           <FormField
             control={form.control}
             name="title"
@@ -81,7 +76,6 @@ const MediaForm: React.FC<MediaFormProps> = ({
             )}
           />
 
-          {/* Type */}
           <FormField
             control={form.control}
             name="type"
